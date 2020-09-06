@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static consoleapp.Calc;
@@ -12,36 +11,29 @@ namespace consoleapp
         {
             var ops = ParserOperacao.ParseTSV(@"C:\Users\leandro\Desktop\se.txt");
             var gruposAtivo = ops.GroupBy(op => GetTipoAtivo(op.Ativo));
+            var carteiras = gruposAtivo
+                .Select(g => Carteira(g, g.Key.ToString()))
+                .ToArray();
 
-            foreach (var grupo in gruposAtivo)
-            {
-                Printt(grupo, grupo.Key.ToString());
-            }
+            var carteiraRV = CarteiraMaster(carteiras);
+            Print(carteiraRV);
+
+            foreach (var c in carteiras)
+                Print(c);
 
             Console.Read();
         }
 
-        static void Printt(IEnumerable<Operacao> ops, string carteira)
+        static void Print(Carteira o)
         {
-            var posicao = PosicaoAtivos(ops);
-            var (totalAplicado, per1) = CalculaPercent(posicao, x => x.FinanceiroCompra);
-
-            var cotacao = Crawler.GetCotacao(posicao.Select(x => x.Ativo));
-            var (patrimonio, per2) = CalculaPercent(posicao, x => x.Quantidade * cotacao[x.Ativo]);
-
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("\n");
-            Console.WriteLine($"{"carteira",20}: {carteira,10}");
-            Console.WriteLine($"{"qtd ativos",20}: {posicao.Length,10}");
-            Console.WriteLine($"{"total aplicado",20}: {totalAplicado.ToString("C"),10}");
-            Console.WriteLine($"{"total patrimonio",20}: {patrimonio.ToString("C"),10}");
-            Console.WriteLine($"{"% rentabilidade",20}: {Regra3Pretty(totalAplicado, patrimonio),10}");
+            Console.WriteLine($"{"carteira",20}: {o.Nome,11}");
+            Console.WriteLine($"{"qtd ativos",20}: {o.QtdAtivos,11}");
+            Console.WriteLine($"{"total aplicado",20}: {o.TotalAplicado.ToString("C"),11}");
+            Console.WriteLine($"{"total patrimonio",20}: {o.TotalPatrimonio.ToString("C"),11}");
+            Console.WriteLine($"{"% rentabilidade",20}: {o.Rentabilidade,11}");
             Console.WriteLine();
-
-            var colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
-            colors = colors.Where(x => x != ConsoleColor.Black).ToArray();
-            var i = 0;
-
             Console.WriteLine(
                 $"{"Ativo",10}\t" +
                 $"{"Aplicado",10}\t" +
@@ -54,29 +46,34 @@ namespace consoleapp
                 $"{"% patrimonio",10}" + 
                 "\n");
 
-            foreach (var x in posicao)
+            var colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
+            colors = colors.Where(x => x != ConsoleColor.Black).ToArray();
+            var i = 0;
+
+            foreach (var p in o.Ativos)
             {
                 Console.ForegroundColor = colors[++i % colors.Length];
 
                 Console.WriteLine(
-                    $"{x.Ativo,10}\t" +
-                    $"{x.FinanceiroCompra,10}\t" +
-                    $"{x.PrecoMedio,10}\t" +
-                    $"{x.Quantidade,10}\t" +
-                    $"{cotacao[x.Ativo],10}\t" +
-                    $"{x.Quantidade * cotacao[x.Ativo],10}\t" +
-                    $"{Regra3Pretty(x.PrecoMedio, cotacao[x.Ativo]),10}\t" +
-                    $"{per1[x.Ativo],10}\t" +
-                    $"{per2[x.Ativo],10}");
+                    $"{p.Ativo,10}\t" +
+                    $"{p.Aplicado,10}\t" +
+                    $"{p.PrecoMedio,10}\t" +
+                    $"{p.Quantidade,10}\t" +
+                    $"{p.Cotacao,10}\t" +
+                    $"{p.Patrimonio,10}\t" +
+                    $"{p.PercentRentab,10}\t" +
+                    $"{p.PercentValorAplicado,10}\t" +
+                    $"{p.PercentValorPatrimonio,10}");
             }
         }
 
-        public static TipoAtivo GetTipoAtivo(string ativo)
+        public static readonly Func<string, TipoAtivo> GetTipoAtivo = BuildGetTipoAtivo();
+        private static Func<string, TipoAtivo> BuildGetTipoAtivo()
         {
             var etfs = Cache.GetOrCreate(Crawler.GetETFTickers, TipoAtivo.ETF);
             var fii = Cache.GetOrCreate(Crawler.GetFIITickers, TipoAtivo.FII);
 
-            return ativo.TrimEnd('F') switch
+            return (ativo) => ativo.TrimEnd('F') switch
             {
                 { } ticker when etfs.ContainsKey(ticker) => TipoAtivo.ETF,
                 { } ticker when fii.ContainsKey(ticker) => TipoAtivo.FII,
