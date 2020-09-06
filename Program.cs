@@ -1,44 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace consoleapp
 {
     public static class Program
     {
-        static IReadOnlyDictionary<string, Ativo> Get(Func<IEnumerable<string>> func, TipoAtivo tipo)
-        {
-            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var path = Path.Combine(dir, $"{tipo}.json");
-            IEnumerable<string> ativos;
-
-            if (File.Exists(path))
-            {
-                var content = new StreamReader(path).ReadToEnd();
-                ativos = JsonSerializer.Deserialize<string[]>(content);
-            }
-            else
-            {
-                ativos = func();
-                var content = JsonSerializer.Serialize(ativos);
-                File.WriteAllText(path, content);
-            }
-
-            return ativos
-                    .Select(x => new Ativo { Ticker = x, Tipo = tipo })
-                    .ToDictionary(x => x.Ticker);
-        }
-
-
-
         static async Task Main(string[] args)
         {
-            var etfs = Get(Crawler.GetETFTickers, TipoAtivo.ETF);
-            var fii = Get(Crawler.GetFIITickers, TipoAtivo.FII);
+            var etfs = Cache.GetOrCreate(Crawler.GetETFTickers, TipoAtivo.ETF);
+            var fii = Cache.GetOrCreate(Crawler.GetFIITickers, TipoAtivo.FII);
             var ops = ParserOperacao.ParseTSV(@"C:\Users\leandro\Desktop\se.txt");
             var grupos = ops.GroupBy(op => GetTipo(op.Ativo));
 
