@@ -32,6 +32,7 @@ namespace consoleapp
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("\n");
             Console.WriteLine($"{"carteira",20}: {carteira,10}");
+            Console.WriteLine($"{"qtd ativos",20}: {posicao.Length,10}");
             Console.WriteLine($"{"total aplicado",20}: {totalAplicado.ToString("C"),10}");
             Console.WriteLine($"{"total patrimonio",20}: {patrimonio.ToString("C"),10}");
             Console.WriteLine($"{"% rentabilidade",20}: {Regra3Pretty(totalAplicado, patrimonio),10}");
