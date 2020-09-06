@@ -10,10 +10,8 @@ namespace consoleapp
     {
         static async Task Main(string[] args)
         {
-            var etfs = Cache.GetOrCreate(Crawler.GetETFTickers, TipoAtivo.ETF);
-            var fii = Cache.GetOrCreate(Crawler.GetFIITickers, TipoAtivo.FII);
             var ops = ParserOperacao.ParseTSV(@"C:\Users\leandro\Desktop\se.txt");
-            var gruposAtivo = ops.GroupBy(op => GetTipo(op.Ativo));
+            var gruposAtivo = ops.GroupBy(op => GetTipoAtivo(op.Ativo));
 
             foreach (var grupo in gruposAtivo)
             {
@@ -21,14 +19,6 @@ namespace consoleapp
             }
 
             Console.Read();
-
-            TipoAtivo GetTipo(string ativo) =>
-                ativo.TrimEnd('F') switch
-                {
-                    { } a when etfs.ContainsKey(a) => TipoAtivo.ETF,
-                    { } a when fii.ContainsKey(a) => TipoAtivo.FII,
-                    _ => TipoAtivo.Acao
-                };
         }
 
         static void Printt(IEnumerable<Operacao> ops, string carteira)
@@ -51,17 +41,17 @@ namespace consoleapp
             colors = colors.Where(x => x != ConsoleColor.Black).ToArray();
             var i = 0;
 
-                Console.WriteLine(
-                    $"{"Ativo",10}\t" +
-                    $"{"Aplicado",10}\t" +
-                    $"{"Pre. Medio",10}\t" +
-                    $"{"Qtd",10}\t" +
-                    $"{"Cotacao",10}\t" +
-                    $"{"Patrimonio",10}\t" +
-                    $"{"% Rentab",10}\t" +
-                    $"{"% val aplicado",10}\t" +
-                    $"{"% patrimonio",10}" + 
-                    "\n");
+            Console.WriteLine(
+                $"{"Ativo",10}\t" +
+                $"{"Aplicado",10}\t" +
+                $"{"Pre. Medio",10}\t" +
+                $"{"Qtd",10}\t" +
+                $"{"Cotacao",10}\t" +
+                $"{"Patrimonio",10}\t" +
+                $"{"% Rentab",10}\t" +
+                $"{"% val aplicado",10}\t" +
+                $"{"% patrimonio",10}" + 
+                "\n");
 
             foreach (var x in posicao)
             {
@@ -78,6 +68,19 @@ namespace consoleapp
                     $"{per1[x.Ativo],10}\t" +
                     $"{per2[x.Ativo],10}");
             }
+        }
+
+        public static TipoAtivo GetTipoAtivo(string ativo)
+        {
+            var etfs = Cache.GetOrCreate(Crawler.GetETFTickers, TipoAtivo.ETF);
+            var fii = Cache.GetOrCreate(Crawler.GetFIITickers, TipoAtivo.FII);
+
+            return ativo.TrimEnd('F') switch
+            {
+                { } ticker when etfs.ContainsKey(ticker) => TipoAtivo.ETF,
+                { } ticker when fii.ContainsKey(ticker) => TipoAtivo.FII,
+                _ => TipoAtivo.Acao
+            };
         }
     }
 }
