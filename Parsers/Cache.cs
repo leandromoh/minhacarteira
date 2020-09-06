@@ -17,7 +17,8 @@ namespace consoleapp
 
             if (File.Exists(path))
             {
-                var content = new StreamReader(path).ReadToEnd();
+                using var streamFile = new StreamReader(path);
+                var content = streamFile.ReadToEnd();
                 ativos = JsonSerializer.Deserialize<string[]>(content);
             }
             else
