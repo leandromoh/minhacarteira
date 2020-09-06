@@ -39,7 +39,7 @@ namespace consoleapp
         {
             var etfs = Get(Crawler.GetETFTickers, TipoAtivo.ETF);
             var fii = Get(Crawler.GetFIITickers, TipoAtivo.FII);
-            var ops = Parser.ParseTSV(@"C:\Users\leandro\Desktop\se.txt");
+            var ops = ParserOperacao.ParseTSV(@"C:\Users\leandro\Desktop\se.txt");
             var grupos = ops.GroupBy(op => GetTipo(op.Ativo));
 
             foreach (var grupo in grupos)

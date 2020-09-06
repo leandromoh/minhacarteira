@@ -4,7 +4,7 @@ using System.IO;
 
 namespace consoleapp
 {
-    public static class Parser
+    public static class ParserOperacao
     {
         public static Operacao[] ParseTSV(string filePath)
         {
