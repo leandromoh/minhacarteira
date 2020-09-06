@@ -9,7 +9,7 @@ namespace consoleapp
     {
         static async Task Main(string[] args)
         {
-            var ops = ParserOperacao.ParseTSV(@"C:\Users\leandro\Desktop\se.txt");
+            var ops = ParserOperacao.ParseTSV(@"C:\Users\foo\Desktop\bar.txt");
             var gruposAtivo = ops.GroupBy(op => GetTipoAtivo(op.Ativo));
             var carteiras = gruposAtivo
                 .Select(g => Carteira(g, g.Key.ToString()))
