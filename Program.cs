@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static consoleapp.Calc;
 
 namespace consoleapp
 {
@@ -12,9 +13,9 @@ namespace consoleapp
             var etfs = Cache.GetOrCreate(Crawler.GetETFTickers, TipoAtivo.ETF);
             var fii = Cache.GetOrCreate(Crawler.GetFIITickers, TipoAtivo.FII);
             var ops = ParserOperacao.ParseTSV(@"C:\Users\leandro\Desktop\se.txt");
-            var grupos = ops.GroupBy(op => GetTipo(op.Ativo));
+            var gruposAtivo = ops.GroupBy(op => GetTipo(op.Ativo));
 
-            foreach (var grupo in grupos)
+            foreach (var grupo in gruposAtivo)
             {
                 Printt(grupo, grupo.Key.ToString());
             }
@@ -32,7 +33,7 @@ namespace consoleapp
 
         static void Printt(IEnumerable<Operacao> ops, string carteira)
         {
-            var posicao = CalculaPosicao(ops);
+            var posicao = PosicaoAtivos(ops);
             var (totalAplicado, per1) = CalculaPercent(posicao, x => x.FinanceiroCompra);
 
             var cotacao = Crawler.GetCotacao(posicao.Select(x => x.Ativo));
@@ -43,7 +44,7 @@ namespace consoleapp
             Console.WriteLine($"{"carteira",20}: {carteira,10}");
             Console.WriteLine($"{"total aplicado",20}: {totalAplicado.ToString("C"),10}");
             Console.WriteLine($"{"total patrimonio",20}: {patrimonio.ToString("C"),10}");
-            Console.WriteLine($"{"% rentabilidade",20}: {Regra3(totalAplicado, patrimonio),10}");
+            Console.WriteLine($"{"% rentabilidade",20}: {Regra3Pretty(totalAplicado, patrimonio),10}");
             Console.WriteLine();
 
             var colors = (ConsoleColor[])ConsoleColor.GetValues(typeof(ConsoleColor));
@@ -73,66 +74,10 @@ namespace consoleapp
                     $"{x.Quantidade,10}\t" +
                     $"{cotacao[x.Ativo],10}\t" +
                     $"{x.Quantidade * cotacao[x.Ativo],10}\t" +
-                    $"{Regra3(x.PrecoMedio, cotacao[x.Ativo]),10}\t" +
+                    $"{Regra3Pretty(x.PrecoMedio, cotacao[x.Ativo]),10}\t" +
                     $"{per1[x.Ativo],10}\t" +
                     $"{per2[x.Ativo],10}");
             }
-        }
-
-        static (decimal total, IReadOnlyDictionary<string, decimal>) CalculaPercent(Posicao[] pos, Func<Posicao, decimal> selector)
-        {
-            var total = pos.Sum(selector);
-            var dic = pos
-                .ToDictionary(x => x.Ativo, x =>
-                {
-                    var ativoPercent = Regra3(total, 100, selector(x));
-                    return Math.Round(ativoPercent, 2);
-                });
-
-            return (total, dic);
-        }
-
-        static string Regra3(decimal x, decimal y)
-        {
-            var d = Regra3(x, 100, y) - 100;
-            var s = d > 0 ? "+" : "-";
-            var abs = Math.Abs(d);
-            abs = Math.Round(abs, 2);
-
-            return s + abs;
-        }
-
-        static decimal Regra3(decimal x, decimal xPercent, decimal y) => (y * xPercent) / x;
-
-        // https://www.controlacao.com.br/blog/como-e-calculado-o-preco-medio-da-sua-carteira
-        static Posicao[] CalculaPosicao(IEnumerable<Operacao> operacoes)
-        {
-            var resultado = operacoes.GroupBy(x => x.Ativo, (ativo, ops) =>
-            {
-                var (medio, qtd) = ops.Aggregate((medio: 0M, qtd: 0), (acc, op) =>
-                {
-                    if (op.QuantidadeVenda > 0)
-                        return (acc.medio, acc.qtd - op.QuantidadeVenda);
-
-                    var x = acc.medio * acc.qtd;
-                    var y = op.Preco * op.QuantidadeCompra;
-                    var novaQtd = acc.qtd + op.QuantidadeCompra;
-                    var novoMedio = (x + y) / novaQtd;
-
-                    return (novoMedio, novaQtd);
-                });
-
-                return new Posicao
-                {
-                    Ativo = ativo,
-                    Quantidade = qtd,
-                    PrecoMedio = Math.Round(medio, 2)
-                };
-            })
-            .Where(x => x.Quantidade != 0)
-            .ToArray();
-
-            return resultado;
         }
     }
 }
