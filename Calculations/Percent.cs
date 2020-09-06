@@ -25,12 +25,11 @@ namespace consoleapp
             var d = Regra3(x, y, xPercent) - xPercent;
             var s = d > 0 ? "+" : "-";
             var abs = Math.Abs(d);
-            abs = Math.Round(abs, 2);
 
             return s + abs;
         }
 
         public static decimal Regra3(decimal x, decimal y, decimal xPercent = 100) =>
-            (y * xPercent) / x;
+            Math.Round((y * xPercent) / x, 2);
     }
 }
