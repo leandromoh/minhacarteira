@@ -13,7 +13,7 @@ namespace consoleapp
             var dic = pos
                 .ToDictionary(x => x.Ativo, x =>
                 {
-                    var ativoPercent = Regra3(total, 100, selector(x));
+                    var ativoPercent = Regra3(total, selector(x));
                     return Math.Round(ativoPercent, 2);
                 });
 
@@ -22,7 +22,7 @@ namespace consoleapp
 
         public static string Regra3Pretty(decimal x, decimal y, decimal xPercent = 100)
         {
-            var d = Regra3(x, xPercent, y) - 100;
+            var d = Regra3(x, y, xPercent) - xPercent;
             var s = d > 0 ? "+" : "-";
             var abs = Math.Abs(d);
             abs = Math.Round(abs, 2);
