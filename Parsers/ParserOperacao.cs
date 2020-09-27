@@ -27,10 +27,16 @@ namespace consoleapp
 
             op.DtNegociacao = DateTime.ParseExact(columns[0], "d/M/yyyy", null);
             op.Conta = int.Parse(columns[1]);
-            op.Ativo = columns[2];
+            op.Ativo = columns[2].ToUpper();
             op.Preco = decimal.Parse(columns[3]);
             op.QuantidadeCompra = int.Parse(columns[4]);
             op.QuantidadeVenda = int.Parse(columns[5]);
+
+            if (op.QuantidadeCompra > 0
+             && op.QuantidadeVenda > 0)
+            {
+                throw new InvalidOperationException("não pode comprar e vender na mesma operação");
+            }
 
             return op;
         }

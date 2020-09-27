@@ -8,7 +8,7 @@ namespace consoleapp
     {
         public static Posicao[] PosicaoAtivos(IEnumerable<Operacao> operacoes)
         {
-            return operacoes.GroupBy(x => x.Ativo, (ativo, ops) =>
+            return operacoes.GroupBy(x => x.Ativo.TrimEnd('F'), (ativo, ops) =>
             {
                 var (medio, qtd) = PrecoMedio(ops);
 
