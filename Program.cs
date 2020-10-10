@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using static consoleapp.Calc;
@@ -9,7 +10,10 @@ namespace consoleapp
     {
         static async Task Main(string[] args)
         {
-            var ops = ParserOperacao.ParseTSV(@"C:\Users\foo\Desktop\bar.txt");
+            Console.WriteLine($"{DateTime.Now:yyyy-MM-ddTHH:mm:ss}");
+
+            var culture = new CultureInfo("pt-BR");
+            var ops = ParserOperacao.ParseCSV(@"C:\Users\foo\Desktop\bar.txt", culture);
             var gruposAtivo = ops.GroupBy(op => GetTipoAtivo(op.Ativo));
             var carteiras = gruposAtivo
                 .Select(g => Carteira(g, g.Key.ToString()))
