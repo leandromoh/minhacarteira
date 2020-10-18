@@ -6,7 +6,7 @@ namespace consoleapp
 {
     public static partial class Calc
     {
-        public static Carteira CarteiraMaster(IEnumerable<Carteira> carteiras)
+        public static Carteira CarteiraMaster(IEnumerable<Carteira> carteiras, string nomeCarteira)
         {
             var aplicadoMaster = carteiras.Sum(x => x.TotalAplicado);
             var patrimonioMaster = carteiras.Sum(x => x.TotalPatrimonio);
@@ -31,7 +31,7 @@ namespace consoleapp
 
             return new Carteira
             {
-                Nome = "RV",
+                Nome = nomeCarteira,
                 TotalAplicado = aplicadoMaster,
                 TotalPatrimonio = patrimonioMaster,
                 Ativos = ativos
