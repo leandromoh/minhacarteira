@@ -11,6 +11,13 @@ namespace consoleapp
 {
     public static class Crawler
     {
+        private static int TimeoutInSeconds { get; }
+
+        static Crawler()
+        {
+            TimeoutInSeconds = int.Parse(Program.Configuration["crawler:timeoutInSeconds"]);
+        }
+
         public static IEnumerable<string> GetFIITickers()
         {
             var address = $"http://www.b3.com.br/pt_br/produtos-e-servicos/negociacao/renda-variavel/fundos-de-investimentos/fii/fiis-listados/";
@@ -21,7 +28,7 @@ namespace consoleapp
 
             var iframe = driver.SwitchTo().Frame("bvmf_iframe");
 
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(TimeoutInSeconds));
 
             wait.Until(d => d.FindElements(By.CssSelector(selector)).Count > 0);
 
@@ -40,7 +47,7 @@ namespace consoleapp
 
             var iframe = driver.SwitchTo().Frame("bvmf_iframe");
 
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(TimeoutInSeconds));
 
             wait.Until(d => d.FindElements(By.CssSelector(selector)).Count > 0);
 
@@ -61,7 +68,7 @@ namespace consoleapp
                 var address = $"http://www.google.com/search?q={ativo}";
                 driver.Navigate().GoToUrl(address);
 
-                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(TimeoutInSeconds));
                 var spanCotacao = wait.Until(d => d.FindElement(By.CssSelector(cellSelector)));
                 var cotacao = decimal.Parse(spanCotacao.Text.Replace(",", "."));
 
