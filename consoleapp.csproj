@@ -5,8 +5,9 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Selenium.WebDriver" Version="3.11"/>
-    <PackageReference Include="Selenium.PhantomJS.WebDriver" Version="2.1.1"/>
-    <PackageReference Include="PuppeteerSharp" Version="2.0.4" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="85.0.4183.8700" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="85.0.4183.8700"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.9"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.9"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.9"/>
   </ItemGroup>
 </Project>
