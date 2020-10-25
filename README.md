@@ -2,6 +2,12 @@
 
 Calcula posição e dados da carteira com base em um arquivo CSV [(exemplo)](Resources/operacoes_exemplo.txt) contendo operacoes realizadas (compra e venda).  
 
+Configure o caminho do arquivo de operações a ser processado bem como o diretorio do arquivo resultado no arquivo `appsettings.json`.
+
+Como resultado do processamento das operações, é gerado um arquivo HTML com os dados das carteiras, como no **exemplo ficticio** abaixo.
+
+![relatorio ficticio](Resources/exemplocarteiraficticia.png)
+
 Agrupa as operações em carteiras com base no tipo do ativo (FII, ETF, Ação) e para cada uma dessas carteira calcula-se:
 - quantidade de cada ativo
 - preco medio de cada ativo
