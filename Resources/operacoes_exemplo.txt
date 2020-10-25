@@ -1,0 +1,2 @@
+Dt Negociacao;Conta;Ativo;Preco;Quantidade Compra;Quantidade Venda
+31/12/1920;1234;PAPEL;1,99;100;0

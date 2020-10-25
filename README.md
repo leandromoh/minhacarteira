@@ -1,6 +1,6 @@
 # minhacarteira
 
-Calcula posição e dados da carteira com base em um arquivo [TSV](https://en.wikipedia.org/wiki/Tab-separated_values) contendo operacoes realizadas (compra e venda).  
+Calcula posição e dados da carteira com base em um arquivo CSV [(exemplo)](Resources/operacoes_exemplo.txt) contendo operacoes realizadas (compra e venda).  
 
 Agrupa as operações em carteiras com base no tipo do ativo (FII, ETF, Ação) e para cada uma dessas carteira calcula-se:
 - quantidade de cada ativo
