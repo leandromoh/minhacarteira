@@ -138,7 +138,7 @@ namespace consoleapp
                         <td>{o.QtdAtivos}</td>
                         <td>{o.TotalAplicado:C}</td>
                         <td>{o.TotalPatrimonio:C}</td>
-                        <td>{(o.TotalPatrimonio - o.TotalAplicado):C}</td>
+                        <td>{o.TotalLucro:C}</td>
                         <td>{o.Rentabilidade}</td>
                     </tr>
                 </table>";

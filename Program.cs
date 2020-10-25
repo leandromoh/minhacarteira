@@ -19,6 +19,12 @@ namespace consoleapp
                 .AddJsonFile("appsettings.json");
 
             Configuration = builder.Build();
+
+            // https://stackoverflow.com/a/11696363
+            // https://docs.microsoft.com/pt-br/dotnet/api/system.globalization.numberformatinfo.currencynegativepattern
+            var culture = (CultureInfo) CultureInfo.CurrentCulture.Clone();
+            culture.NumberFormat.CurrencyNegativePattern = 1;
+            CultureInfo.CurrentCulture = culture;
         }
 
         static void Main(string[] args)

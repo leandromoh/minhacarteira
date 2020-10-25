@@ -9,6 +9,7 @@ namespace consoleapp
         public string Nome;
         public decimal TotalAplicado;
         public decimal TotalPatrimonio;
+        public decimal TotalLucro => TotalPatrimonio - TotalAplicado;
         public IEnumerable<CarteiraAtivo> Ativos;
 
         public int QtdAtivos => Ativos.Count();
