@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -22,6 +23,8 @@ namespace consoleapp
             <html>
                 <head>
                     <title>{pageTitle}</title>
+                    <script src=""https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js""></script>
+                    <script src=""https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.4.0/dist/chartjs-plugin-datalabels.min.js""></script>
                     {GetStyle()}
                 </head>
                 <body>
@@ -31,14 +34,57 @@ namespace consoleapp
             ";
         }
 
+        private static string GetChart(Carteira o)
+        {
+            var id = Guid.NewGuid();
+            var culture = CultureInfo.InvariantCulture;
+            var values = string.Join(", ", o.Ativos.Select(x => x.PercentValorPatrimonio.ToString(culture)));
+            var names = string.Join(", ", o.Ativos.Select(x => $"'{x.Ativo}'"));
+
+            return $@" 
+            <div class=""chart-container"">
+                <canvas id=""{id}""></canvas>
+            </div>
+            <script>
+            (function(){{
+                var ctx = document.getElementById('{id}').getContext('2d');
+                var chart = new Chart(ctx, {{
+                    type: 'pie',
+                    data: {{
+                        datasets: [{{
+                            label: 'Colors',
+                            data: [{values}],
+                            backgroundColor: [
+                                '#0074D9', '#FF4136', '#2ECC40', '#FF851B', 
+                                '#7FDBFF', '#B10DC9', '#FFDC00', '#001f3f', 
+                                '#39CCCC', '#01FF70', '#85144b', '#F012BE', 
+                                '#3D9970', '#111111', '#AAAAAA']
+                        }}],
+                        labels: [{names}]
+                    }},
+                    options: {{
+                        responsive:true,
+                        title:{{
+                            display: true,
+                            text: ""% Patrimonio""
+                        }},
+                        plugins: {{
+                            datalabels: {{
+                                formatter: (value, ctx) =>  value + '%',
+                                color: '#fff',
+                            }}
+                        }}
+                    }}
+                }});
+            }})();
+            </script>
+            ";
+        }
+
         private static string GetStyle()
         {
             return @"
                 <style>
-                    hr {
-                        margin-bottom: 5%; 
-                    }
-
                     table {
                         font-family: Arial, Helvetica, sans-serif;
                         border-collapse: collapse;
@@ -64,6 +110,12 @@ namespace consoleapp
                         text-align: left;
                         background-color: #4CAF50;
                         color: white;
+                    }
+
+                    .chart-container {
+                        margin-left: 10%;
+                        width: 80%;
+                        margin-bottom: 5%; 
                     }
                 </style>
                 ";
@@ -108,7 +160,7 @@ namespace consoleapp
                         <th>% patrimonio</th>
                     </tr>
                     {string.Join("\n", o.Ativos.Select(GetRow))}
-                </table> <hr/>";
+                </table> {GetChart(o)}";
         }
 
         private static string GetRow(CarteiraAtivo p)
