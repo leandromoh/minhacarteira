@@ -10,7 +10,7 @@ namespace consoleapp
         {
             return operacoes.GroupBy(x => x.Ativo.TrimEnd('F'), (ativo, ops) =>
             {
-                var (medio, qtd) = PrecoMedio(ops);
+                var (medio, qtd) = PrecoMedio(ops.OrderBy(x => x.DtNegociacao));
 
                 return new Posicao
                 {
