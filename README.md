@@ -30,5 +30,6 @@ Por ultimo apresenta o consolidado de cada carteira na forma de carteira de rend
 
 **Disclaimer: O aplicativo não é um consultor de investimentos. Os dados e as informações não constituem uma recomendação para comprar ou vender títulos financeiros.  O aplicativo não faz declarações sobre a conveniência ou a adequação de qualquer investimento. Todos os dados e informações são fornecidos "no estado em que se encontram" sem qualquer tipo de garantia, somente para fins de informação pessoal, e não de negociações ou recomendações. Consulte seu agente ou representante financeiro para verificar os preços antes de executar qualquer negociação.**
 
-Observação 1: utiliza o navegador Google Chrome v85.0.4183  
-Observação 2: consulta o google para saber a cotação de cada ativo
+Observação 1: necessário ter installado o navegador Google Chrome v85.0.4183  
+Observação 2: consulta o google para saber a cotação de cada ativo  
+Observação 3: necessário [.net core 3](https://dotnet.microsoft.com/download) ou superior para compilar/executar o projeto.
