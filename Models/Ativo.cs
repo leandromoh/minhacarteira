@@ -15,5 +15,7 @@ namespace consoleapp
         Acao = 0,
         ETF = 1,
         FII = 2,
+        BDR = 3,
+        Outro = 4,
     }
 }
