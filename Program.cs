@@ -30,12 +30,24 @@ namespace consoleapp
         static void Main(string[] args)
         {
             var culture = new CultureInfo("pt-BR");
-            var operationsFilePath = Configuration["input:operationsFilePath"];
+            
+            var operationsFilesPath = Configuration.GetSection("input:operationsFilesPath")
+                                                   .GetChildren()
+                                                   .Select(x => x.Value);
+
             var reportDirectoryPath = Configuration["output:reportDirectoryPath"];
             var reportFilePath =  Path.Combine(reportDirectoryPath, 
                                         $"minhacarteira.{DateTime.Now:yyyy.MM.dd.HH.mm.ss}.html");
 
-            var ops = ParserOperacao.ParseCSV(operationsFilePath, culture);
+            var ops = operationsFilesPath
+                .SelectMany(path => 
+                {
+                    var dir = Path.GetDirectoryName(path);
+                    var pattern = Path.GetFileName(path);
+                    return Directory.GetFiles(dir, pattern);
+                })
+                .SelectMany(path => ParserOperacao.ParseCSV(path, culture))
+                .ToArray();
 
             var gruposAtivo = ops.GroupBy(op => op.Ativo.GetTipoAtivo());
             var carteiras = gruposAtivo
