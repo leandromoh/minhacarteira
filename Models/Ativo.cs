@@ -14,8 +14,10 @@ namespace consoleapp
     {
         Acao = 0,
         ETF = 1,
-        FII = 2,
-        BDR = 3,
-        Outro = 4,
+        BDR = 2,
+        FII = 3,
+        RendaFixa = 4,
+        Poupanca = 5,
+        Outro = 6,
     }
 }

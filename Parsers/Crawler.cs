@@ -56,23 +56,22 @@ namespace consoleapp
             return ativos.Select(x => x.Text + "11").ToArray();
         }
 
-        public static IReadOnlyDictionary<string, decimal> GetCotacao(IEnumerable<string> ativos)
+        public static IReadOnlyDictionary<string, decimal?> GetCotacao(IEnumerable<string> ativos)
         {
             var cellSelector = "div[eid] div[data-ved] span[jscontroller] span[jsname]";
 
             using IWebDriver driver = GetDriver();
-            var dic = new Dictionary<string, decimal>();
+            var dic = new Dictionary<string, decimal?>();
 
             foreach (var ativo in ativos)
             {
                 var address = $"http://www.google.com/search?q={ativo}";
                 driver.Navigate().GoToUrl(address);
 
-                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(TimeoutInSeconds));
-                var spanCotacao = wait.Until(d => d.FindElement(By.CssSelector(cellSelector)));
-                var cotacao = decimal.Parse(spanCotacao.Text.Replace(",", "."));
-
-                dic[ativo] = cotacao;
+                var spanCotacao = driver.FindElements(By.CssSelector(cellSelector)).FirstOrDefault();
+                dic[ativo] = decimal.TryParse(spanCotacao?.Text?.Replace(",", "."), out var cotacao)
+                             ? cotacao 
+                             : (decimal?) null;
             }
             return dic;
         }

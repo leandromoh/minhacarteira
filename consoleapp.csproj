@@ -4,8 +4,8 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Selenium.WebDriver" Version="3.11"/>
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="85.0.4183.8700"/>
+    <PackageReference Include="Selenium.WebDriver" Version="3.141.0"/>
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="87.0.4280.8800"/>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.9"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.1.9"/>
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.9"/>

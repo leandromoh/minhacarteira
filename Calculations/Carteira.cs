@@ -44,7 +44,7 @@ namespace consoleapp
             var (totalAplicado, per1) = CalculaPercent(posicao, x => x.FinanceiroCompra);
 
             var cotacao = Crawler.GetCotacao(posicao.Select(x => x.Ativo));
-            var (patrimonio, per2) = CalculaPercent(posicao, x => x.Quantidade * cotacao[x.Ativo]);
+            var (patrimonio, per2) = CalculaPercent(posicao, x => x.Quantidade * (cotacao[x.Ativo] ?? x.PrecoMedio));
 
             var ativos = posicao.Select(x => new CarteiraAtivo
             {
@@ -53,7 +53,7 @@ namespace consoleapp
                 PrecoMedio = x.PrecoMedio,
                 Quantidade = x.Quantidade,
                 Cotacao = cotacao[x.Ativo],
-                Patrimonio = x.Quantidade * cotacao[x.Ativo],
+                Patrimonio = x.Quantidade * (cotacao[x.Ativo] ?? x.PrecoMedio),
                 PercentValorAplicado = per1[x.Ativo],
                 PercentValorPatrimonio = per2[x.Ativo]
             })

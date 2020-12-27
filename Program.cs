@@ -49,7 +49,10 @@ namespace consoleapp
                 .SelectMany(path => ParserOperacao.ParseCSV(path, culture))
                 .ToArray();
 
-            var gruposAtivo = ops.GroupBy(op => op.Ativo.GetTipoAtivo());
+            var gruposAtivo = ops
+                .GroupBy(op => op.Ativo.GetTipoAtivo())
+                .OrderBy(g => g.Key);
+
             var carteiras = gruposAtivo
                 .Select(g => Carteira(g, g.Key.ToString()))
                 .ToArray();
