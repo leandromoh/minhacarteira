@@ -55,6 +55,7 @@ namespace consoleapp
 
             var carteiras = gruposAtivo
                 .Select(g => Carteira(g, g.Key.ToString()))
+                .Where(c => c.Ativos.Any())
                 .ToArray();
 
             var carteiraRV = CarteiraMaster(carteiras, "RV");
